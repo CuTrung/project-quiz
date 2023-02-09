@@ -1,0 +1,3 @@
+.navbar-expand-lg .navbar-nav .dropdown-menu {
+    position: static !important;
+}

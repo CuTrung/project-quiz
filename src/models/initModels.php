@@ -4,15 +4,14 @@ include './src/configs/connectDB.php';
 $db = new ConnectDB();
 $GLOBALS['db'] = $db;
 
+set_include_path(get_include_path() . PATH_SEPARATOR . 'models/');
+spl_autoload_extensions('.php');
+spl_autoload_register();
 
-include './src/models/participant.php';
 $participantModel = new Participant();
 
-include './src/models/quiz.php';
 $quizModel = new Quiz();
 
-include './src/models/question.php';
 $questionModel = new Question();
 
-include './src/models/answer.php';
 $answerModel = new Answer();

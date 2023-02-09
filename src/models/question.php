@@ -18,7 +18,7 @@ class Question
             $select = "SELECT * FROM question";
         }
 
-        return $GLOBALS['db']->get($select);
+        return $GLOBALS['db']->executeQuery($select);
     }
 
     public function getQuestionsByQuizId($quizId)
@@ -29,13 +29,13 @@ class Question
 
 
 
-        return $GLOBALS['db']->get($select);
+        return $GLOBALS['db']->executeQuery($select);
     }
 
     public function createANewQuestion($name, $email, $password)
     {
         $query = "INSERT INTO question VALUES ($name, $email, $password)";
 
-        return $GLOBALS['db']->insert($query);
+        return $GLOBALS['db']->executeQuery($query);
     }
 }

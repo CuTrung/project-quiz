@@ -1,10 +1,6 @@
 <?php
 class Answer
 {
-    private $name;
-    private $email;
-    private $password;
-
     public function __construct()
     {
     }
@@ -18,27 +14,27 @@ class Answer
             $select = "SELECT * FROM answer";
         }
 
-        return $GLOBALS['db']->get($select);
+        return $GLOBALS['db']->executeQuery($select);
     }
 
     public function getAnswersById($id)
     {
 
         $select = "SELECT * FROM answer WHERE id = $id";
-        return $GLOBALS['db']->get($select);
+        return $GLOBALS['db']->executeQuery($select)[0];
     }
 
     public function getAnswersByQuestionId($questionId)
     {
         $select = "SELECT * FROM answer WHERE questionId = $questionId";
 
-        return $GLOBALS['db']->get($select);
+        return $GLOBALS['db']->executeQuery($select);
     }
 
     public function createANewAnswer($name, $email, $password)
     {
         $query = "INSERT INTO answer VALUES ($name, $email, $password)";
 
-        return $GLOBALS['db']->insert($query);
+        return $GLOBALS['db']->executeQuery($query);
     }
 }

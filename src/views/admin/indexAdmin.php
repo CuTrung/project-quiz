@@ -1,3 +1,10 @@
+<?php
+if ($_SESSION['user']['email'] !== $_ENV['EMAIL_ADMIN']) {
+    reloadCurrentPage(0, '?login');
+    return;
+}
+?>
+
 <div class="row my-3 mt-5 pt-5">
     <div class="col-3">
         <div class="card">
@@ -5,18 +12,16 @@
                 <button type="button" class="btn btn-success w-100">Logo</button>
             </div>
             <div class="card-body">
-                <a class="w-100 mb-3 btn btn-primary" href="?admin&participants">
+                <a class="w-100 mb-3 btn btn-primary" href="?admin&participant">
                     Participant
                 </a>
-                <a class="btn btn-info w-100 mb-3" href="?admin&quizzes">Quiz</a>
+                <a class="btn btn-info w-100 mb-3" href="?admin&quiz">Quiz</a>
             </div>
         </div>
     </div>
     <div class="col-9">
         <?php
-        if (isset($_REQUEST['participants'])) {
-            include $controller->render('views/admin/indexParticipant.php');
-        }
+        include $controller->render('controllers/adminContentController.php');
         ?>
     </div>
 </div>

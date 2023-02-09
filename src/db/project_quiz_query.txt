@@ -1,0 +1,85 @@
+CREATE TABLE quiz (
+    id int NOT NULL AUTO_INCREMENT,
+    name varchar(255),
+    difficulty varchar(255),
+    image varchar(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE quiz_question (
+    id int NOT NULL AUTO_INCREMENT,
+    quizId varchar(255),
+    questionId varchar(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE question (
+    id int NOT NULL AUTO_INCREMENT,
+    description varchar(255),
+    image varchar(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE history (
+    id int NOT NULL AUTO_INCREMENT,
+    quizId varchar(255),
+    participantId varchar(255),
+     totalQuestion varchar(255),
+    totalQuestionCorrect varchar(255),
+     timeStart varchar(255),
+    timeEnd varchar(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE answer (
+    id int NOT NULL AUTO_INCREMENT,
+    description varchar(255),
+    isCorrect int,
+    questionId varchar(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE participant (
+    id int NOT NULL AUTO_INCREMENT,
+    name varchar(255),
+    email varchar(255),
+    password varchar(255),
+    groupId varchar(255),
+    PRIMARY KEY (id)
+);
+
+
+
+
+INSERT INTO quiz (name, difficulty, image) VALUES 
+('quiz1', 'EASY', 'quiz1.jpg'), 
+('quiz2', 'MEDIUM', 'quiz1.jpg'), 
+('quiz3', 'HARD', 'quiz1.jpg');
+
+
+INSERT INTO quiz_question (quizId, questionId) VALUES 
+('1', '1'), 
+('2', '1'), 
+('2', '2');
+
+INSERT INTO history (quizId, participantId) VALUES 
+('1', '1'), 
+('1', '2'), 
+('2', '2');
+
+INSERT INTO participant (name, email, password, groupId) VALUES 
+('trung', 'trung@gmail.com', '123456', '2'), 
+('long', 'long@gmail.com', '123456', '1'), 
+('an', 'an@gmail.com', '123456', '1');
+
+INSERT INTO question (description, image) VALUES 
+('Đây là ai', 'question1.jpg'), 
+('Đây là đâu', 'question2.jpg'), 
+('Đây là gì', 'question3.jpg');
+
+INSERT INTO answer (description, isCorrect, questionId) VALUES 
+('trung', 0, '1'), 
+('trung đẹp trai', 1, '1'), 
+('Bình Định', 1, '2'), 
+('Thái Lan', 0, '2');
+

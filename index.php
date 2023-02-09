@@ -15,28 +15,30 @@
     <!-- Template Main CSS File -->
     <link href="src/assets/css/main.css" rel="stylesheet">
 
+    <!-- References to library -->
+    <?php include './src/lib/libReferences.php'; ?>
 
-    <!-- BOOTSTRAP 5 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/js/bootstrap.min.js" integrity="sha512-8Y8eGK92dzouwpROIppwr+0kPauu0qqtnzZZNEF8Pat5tuRNJxJXCkbQfJ0HlUG3y1HB3z18CSKmUo7i2zcPpg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/css/bootstrap.min.css" integrity="sha512-XWTTruHZEYJsxV3W/lSXG1n3Q39YIWOstqvmFsdNEEQfHoZ6vm6E9GK2OrF6DSJSpIbRbi+Nn0WDPID9O7xB2Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <!-- FONT AWESOME  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- My style -->
+    <link href="src/assets/css/both/loading.css" rel="stylesheet">
+    <link href="src/assets/css/admin/indexParticipant.css" rel="stylesheet">
+    <link href="src/assets/css/user/header.css" rel="stylesheet">
+    <link href="src/assets/css/admin/indexQuiz.css" rel="stylesheet">
 
     <!-- Init Models -->
     <?php include './src/models/initModels.php'; ?>
 
-
     <!-- Use utils -->
+    <?php include './src/utils/myIcons.php'; ?>
     <?php include './src/utils/myUtils.php'; ?>
+    <?php include './src/utils/validationUtils.php'; ?>
+
+    <!-- Start SESSION PHP -->
+    <?php session_start(); ?>
+
+    <?php loadENV(); ?>
 </head>
 
 <body>
-
-    <!-- 
-    Tìm hiểu SPL auto load
-
-    -->
 
     <?php include './src/views/user/header.php'; ?>
 

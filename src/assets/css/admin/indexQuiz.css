@@ -1,0 +1,9 @@
+.addQuestion i {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.removeQuestion i {
+    font-size: 20px;
+    cursor: pointer;
+}

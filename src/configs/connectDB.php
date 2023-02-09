@@ -19,8 +19,18 @@ class ConnectDB
         return $this->db->query($select)->fetchAll();
     }
 
-    public function insert($query)
+    public function insert($query, $value)
     {
-        return $this->db->exec($query);
+        return $this->db->prepare($query)->execute($value);
+    }
+
+    public function executeQuery($query, $value = [])
+    {
+        // SELECT
+        if ($query[0] === 'S')
+            return $this->db->query($query)->fetchAll();
+
+        // INSERT, UPDATE, DELETE 
+        return $this->db->prepare($query)->execute($value);
     }
 }

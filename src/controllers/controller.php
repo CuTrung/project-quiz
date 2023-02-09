@@ -2,6 +2,6 @@
 {
     function render($path)
     {
-        return $this->path = str_replace('controllers', $path, dirname(__FILE__));
+        return str_replace('controllers', $path, dirname(__FILE__));
     }
 }

@@ -75,27 +75,30 @@
 </div>
 
 
-<script>
-    let isCheckedBefore = (value) => {
-        return [...value.querySelectorAll('input')].find(item => item.checked);
-    }
+<?php
+function toggleColorQuestion()
+{
+    useJavaScript("
+        let isCheckedBefore = (value) => {
+            return [...value.querySelectorAll('input')].find(item => item.checked);
+        }
 
-    function handleOnClick(e) {
-        for (const item of document.querySelectorAll('.question')) {
-            if (+item.innerText === +e.getAttribute('data-questionIndex')) {
-                item.classList.add('btn-warning');
-                if (!isCheckedBefore(e.parentNode.parentNode))
-                    item.classList.remove('btn-warning');
+        function handleOnClick(e) {
+            for (const item of document.querySelectorAll('.question')) {
+                if (+item.innerText === +e.getAttribute('data-questionIndex')) {
+                    item.classList.add('btn-warning');
+                    if (!isCheckedBefore(e.parentNode.parentNode))
+                        item.classList.remove('btn-warning');
+                }
             }
         }
-    }
-</script>
+    ");
+}
+toggleColorQuestion();
 
-<?php
 function autoClickFinish()
 {
-    echo "
-    <script>
+    useJavaScript("
         let arrChecked = JSON.parse(window.sessionStorage.getItem('checkedBefore'));
         if(arrChecked){
             for (const item of document.querySelectorAll('input')) {
@@ -109,54 +112,47 @@ function autoClickFinish()
             
             window.sessionStorage.setItem('autoFinishSuccess', true);
         }
-    
-    </script>
-    ";
+    ");
 }
 
 
 function disableAndCheckedCheckbox($answer, $isShowAnswer = 0)
 {
-    echo "
-    <script>
+    useJavaScript("
         document.querySelector('.btnFinish').classList.add('disabled');
-        for (const item of document.querySelectorAll('input')) {
-            item.disabled = true;
-            if(+item.value === +{$answer['id']}){
-                item.checked = true;
-            }
-
-            if($isShowAnswer || window.sessionStorage.getItem('autoFinishSuccess')){
+            for (const item of document.querySelectorAll('input')) {
+                item.disabled = true;
                 if(+item.value === +{$answer['id']}){
                     item.checked = true;
-                    if({$answer['isCorrect']} === 0){
-                        item.classList.add('is-invalid');
-                    } else {
+                }
+
+                if($isShowAnswer || window.sessionStorage.getItem('autoFinishSuccess')){
+                    if(+item.value === +{$answer['id']}){
+                        item.checked = true;
+                        if({$answer['isCorrect']} === 0){
+                            item.classList.add('is-invalid');
+                        } else {
+                            item.classList.add('is-valid');
+                        }
+                    }
+                    if(+item.getAttribute('data-isCorrect') === 1){
                         item.classList.add('is-valid');
                     }
-                }
-                if(+item.getAttribute('data-isCorrect') === 1){
-                    item.classList.add('is-valid');
-                }
-            } 
-        }
-
-    </script>
-    ";
+                } 
+            }
+    ");
 }
 
 function disableTimer()
 {
-    echo "
-        <script>
-            document.querySelector('#time').classList.add('d-none');
-            document.querySelector('#finishMess').classList.remove('d-none');
-        </script>
-    ";
+    useJavaScript("
+        document.querySelector('#time').classList.add('d-none');
+        document.querySelector('#finishMess').classList.remove('d-none');
+    ");
 }
 
 
-countDownTimer(5, '#time');
+countDownTimer((int)$_ENV['TIME_COUNT_DOWN'], '#time');
 
 // Có check nhưng hết giờ auto nộp bài
 autoClickFinish();
@@ -164,7 +160,7 @@ if (isset($_REQUEST['answerIds'])) {
     disableTimer();
     $answersIds = $_REQUEST['answerIds'];
     foreach ($answersIds as $answerId) {
-        $answer = $answerModel->getAnswersById($answerId)[0];
+        $answer = $answerModel->getAnswersById($answerId);
         if ($answer)
             disableAndCheckedCheckbox($answer);
     }
