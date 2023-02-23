@@ -11,12 +11,7 @@ class Participant
 
     public function getParticipants($quantity = '')
     {
-
-        if ($quantity) {
-            $select = "SELECT * FROM participant LIMIT $quantity";
-        } else {
-            $select = "SELECT * FROM participant";
-        }
+        $select = "SELECT * FROM participant" . ($quantity ? "LIMIT $quantity" : "");
 
         return $GLOBALS['db']->executeQuery($select);
     }

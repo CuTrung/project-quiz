@@ -7,12 +7,7 @@ class Answer
 
     public function getAnswers($quantity = '')
     {
-
-        if ($quantity) {
-            $select = "SELECT * FROM answer LIMIT $quantity";
-        } else {
-            $select = "SELECT * FROM answer";
-        }
+        $select = "SELECT * FROM answer" . ($quantity ? "LIMIT $quantity" : "");
 
         return $GLOBALS['db']->executeQuery($select);
     }

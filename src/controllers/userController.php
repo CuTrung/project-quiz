@@ -5,7 +5,7 @@ $param = explode('&', $_SERVER['QUERY_STRING'])[0];
 // Rules: Nếu url có nhiều params thì bắt buộc params đầu tiên chỉ dùng để  
 // render ra view tương ứng (Ex: ?question&quizId=1) => question
 
-$result = in_array($param, ["login", "logout", "", "register"]);
+$result = in_array($param, ["login", "logout", "", "register", "forget"]);
 if (!$result && !$_SESSION['user']) {
     // Login mới cho đi tiếp
     reloadCurrentPage(0, '?login');
@@ -14,6 +14,7 @@ if (!$result && !$_SESSION['user']) {
 switch ($param) {
     case 'register':
     case 'login':
+    case 'forget':
         include $controller->render('views/both/login.php');
         break;
     case 'logout':

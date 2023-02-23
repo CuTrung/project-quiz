@@ -40,7 +40,7 @@
 
 <body>
 
-    <?php include './src/views/user/header.php'; ?>
+    <!-- <?php include './src/views/user/header.php'; ?> -->
 
     <?php include './src/routes/initRoutes.php'; ?>
 

@@ -11,12 +11,7 @@ class Question
 
     public function getQuestions($quantity = '')
     {
-
-        if ($quantity) {
-            $select = "SELECT * FROM question LIMIT $quantity";
-        } else {
-            $select = "SELECT * FROM question";
-        }
+        $select = "SELECT * FROM question" . ($quantity ? "LIMIT $quantity" : "");
 
         return $GLOBALS['db']->executeQuery($select);
     }

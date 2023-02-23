@@ -12,12 +12,7 @@ class Quiz
 
     public function getQuizzes($quantity = '')
     {
-
-        if ($quantity) {
-            $select = "SELECT * FROM quiz LIMIT $quantity";
-        } else {
-            $select = "SELECT * FROM quiz";
-        }
+        $select = "SELECT * FROM quiz" . ($quantity ? "LIMIT $quantity" : "");
 
         return $GLOBALS['db']->executeQuery($select);
     }
