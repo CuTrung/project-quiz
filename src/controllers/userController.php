@@ -22,8 +22,10 @@ switch ($param) {
         include $controller->render('views/both/login.php');
         break;
     case 'quiz':
+        $_SESSION['isRandomQuestions'] = false;
+        $_SESSION['isRandomAnswers'] = false;
         removeSessionStorage(
-            '["timeout", "checkedBefore", "autoFinishSuccess", "wrong"]'
+            '["timeout", "checkedBefore", "autoFinishSuccess", "incorrect", "timeStart", "timeEnd"]'
         );
         include $controller->render('views/user/indexQuiz.php');
         break;
@@ -31,6 +33,9 @@ switch ($param) {
         include $controller->render('views/user/indexQuestion.php');
         break;
     case 'history':
+        removeSessionStorage(
+            '["incorrect", "timeStart", "timeEnd"]'
+        );
         include $controller->render('views/user/indexHistory.php');
         break;
     default:

@@ -19,17 +19,31 @@ class Question
     public function getQuestionsByQuizId($quizId)
     {
         $select = "SELECT question.id, question.description, question.image  
-        FROM question JOIN quiz_question ON question.id = quiz_question.questionId
+        FROM question INNER JOIN quiz_question ON question.id = quiz_question.questionId
         WHERE quiz_question.quizId = $quizId";
-
-
 
         return $GLOBALS['db']->executeQuery($select);
     }
 
-    public function createANewQuestion($name, $email, $password)
+    public function createANewQuestion($description, $image = '')
     {
-        $query = "INSERT INTO question VALUES ($name, $email, $password)";
+        $query = "INSERT INTO question (description, image) VALUES (?, ?)";
+
+        return $GLOBALS['db']->executeQuery($query, [$description, $image]);
+    }
+
+    public function getQuestionsBy($condition)
+    {
+        $column = key($condition);
+        $query = "SELECT * FROM question WHERE $column = '{$condition[$column]}'";
+
+        return $GLOBALS['db']->executeQuery($query);
+    }
+
+    public function deleteQuestionsBy($condition)
+    {
+        $column = key($condition);
+        $query = "DELETE FROM question WHERE $column = '{$condition[$column]}'";
 
         return $GLOBALS['db']->executeQuery($query);
     }

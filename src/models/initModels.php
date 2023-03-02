@@ -18,3 +18,7 @@ $questionModel = new Question();
 $answerModel = new Answer();
 
 $historyModel = new History();
+
+$roleModel = new Role();
+
+$groupModel = new Group();

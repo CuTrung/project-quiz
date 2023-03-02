@@ -1,5 +1,11 @@
 <?php
-
+function logArray($array)
+{
+    print "<pre class='bg-info w-50'>";
+    print_r($array);
+    print "</pre>";
+    return;
+}
 function loadENV()
 {
     $dirConvert = str_replace('\src\utils', '', __DIR__);
@@ -34,6 +40,7 @@ function countDownTimer($duration, $elementId)
     useJavaScript("
         function checkedBefore(){
             let arr = [];
+            window.sessionStorage.setItem('checkedBefore', JSON.stringify(arr));
             for (const item of document.querySelectorAll('input')) {
                 if(item.checked){
                     arr.push(item.value);
@@ -138,4 +145,37 @@ function sendEmail($toEmail, $title, $contentHTML)
     $mail->Body    = $contentHTML;
     // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
     return $mail->Send();
+}
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+function loadXLSX($file)
+{
+    $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+    $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+    $spreadsheet = $reader->load($file);
+    $schdeules = $spreadsheet->getActiveSheet()->toArray();
+    return $schdeules;
+}
+
+function mergeArraySameKeys($array, $key)
+{
+    $outer_array = array();
+    $unique_array = array();
+    foreach ($array as $value) {
+        $inner_array = array();
+
+        $fid_value = $value[$key];
+        if (!in_array($value[$key], $unique_array)) {
+            array_push($unique_array, $fid_value);
+            unset($value[$key]);
+            array_push($inner_array, $value);
+            $outer_array[$fid_value] = $inner_array;
+        } else {
+            unset($value[$key]);
+            array_push($outer_array[$fid_value], $value);
+        }
+    }
+
+    return $outer_array;
 }

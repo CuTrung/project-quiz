@@ -26,9 +26,17 @@ class Answer
         return $GLOBALS['db']->executeQuery($select);
     }
 
-    public function createANewAnswer($name, $email, $password)
+    public function createANewAnswer($description, $isCorrect, $questionId)
     {
-        $query = "INSERT INTO answer VALUES ($name, $email, $password)";
+        $query = "INSERT INTO answer (description, isCorrect, questionId) VALUES (?, ?, ?)";
+
+        return $GLOBALS['db']->executeQuery($query, [$description, $isCorrect, $questionId]);
+    }
+
+    public function deleteAnswersBy($condition)
+    {
+        $column = key($condition);
+        $query = "DELETE FROM answer WHERE $column = '{$condition[$column]}'";
 
         return $GLOBALS['db']->executeQuery($query);
     }

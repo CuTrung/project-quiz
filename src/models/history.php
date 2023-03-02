@@ -25,7 +25,7 @@ class History
     public function getHistoriesBy($condition)
     {
         $column = key($condition);
-        $select = "SELECT h.id, q.name, p.name, h.totalQuestion, h.totalQuestionCorrect, h.timeStart, h.timeEnd FROM history h INNER JOIN participant p ON h.participantId = p.id INNER JOIN quiz q ON h.quizId = q.id WHERE $column LIKE {$condition[$column]}";
+        $select = "SELECT h.id, q.name as quizName, q.difficulty, p.name, h.totalQuestion, h.quizId, h.totalQuestionCorrect, h.timeStart, h.timeEnd FROM history h INNER JOIN participant p ON h.participantId = p.id INNER JOIN quiz q ON h.quizId = q.id WHERE $column LIKE {$condition[$column]}";
 
         return $GLOBALS['db']->executeQuery($select);
     }
@@ -43,5 +43,18 @@ class History
         $select = "SELECT * FROM history WHERE name LIKE '%$strSearch%'";
 
         return $GLOBALS['db']->executeQuery($select);
+    }
+
+    public function updateHistoriesBy($data)
+    {
+        $quizId = $data['quizId'];
+        $participantId = $data['participantId'];
+        $totalQuestionCorrect = $data['totalQuestionCorrect'];
+        $timeStart = $data['timeStart'];
+        $timeEnd = $data['timeEnd'];
+
+        $query = "UPDATE history SET totalQuestionCorrect=?, timeStart=?, timeEnd=? WHERE quizId=? AND participantId=?";
+
+        return $GLOBALS['db']->executeQuery($query, [$totalQuestionCorrect, $timeStart, $timeEnd, $quizId, $participantId]);
     }
 }

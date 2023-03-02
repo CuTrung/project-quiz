@@ -10,4 +10,8 @@ switch ($param) {
     case 'participant':
         include $controller->render('views/admin/indexParticipant.php');
         break;
+    case 'group':
+    case 'role':
+        include $controller->render('views/admin/indexGroupRole.php');
+        break;
 }

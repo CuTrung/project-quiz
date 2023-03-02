@@ -39,14 +39,17 @@ class Participant
         return $GLOBALS['db']->executeQuery($select)[0];
     }
 
-    public function upsertAParticipant($name, $email, $password, $id = '')
+    public function upsertAParticipant($name, $email, $password, $group, $id = '')
     {
-        if ($id)
-            $query = "UPDATE participant SET name = ?, email = ?, password = ? WHERE id = ?";
-        else
-            $query = "INSERT INTO participant (name, email, password, groupId) VALUES (?, ?, ?, ?)";
+        if ($id) {
+            $query = "UPDATE participant SET name = ?, email = ?, password = ?, groupId=? WHERE id = ?";
 
-        return $GLOBALS['db']->executeQuery($query, [$name, $email, $password, $id ? $id : '1']);
+            return $GLOBALS['db']->executeQuery($query, [$name, $email, $password, $group, $id]);
+        }
+
+        $query = "INSERT INTO participant (name, email, password, groupId) VALUES (?, ?, ?, ?)";
+
+        return $GLOBALS['db']->executeQuery($query, [$name, $email, $password, $group]);
     }
 
     public function deleteAParticipant($id)

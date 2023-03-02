@@ -10,6 +10,10 @@
 $GLOBALS['participantModel'] = $participantModel;
 $participants = $participantModel->getParticipants();
 
+$groups = $groupModel->getGroups();
+
+logArray($groups);
+
 if (isset($_REQUEST['page'])) {
     $page = $_REQUEST['page'];
     $limit = 3;
@@ -54,6 +58,14 @@ function button()
         <label for="floatingPassword">Password</label>
         <i onclick="handleEye(this)" class="eye fa-solid fa-eye position-absolute top-0 end-0"></i>
     </div>
+
+    <select name="group" class="form-select mb-3 w-25" aria-label="Default select example">
+        <option hidden selected value="">Choose group</option>
+        <?php foreach ($groups as $key => $group) { ?>
+            <option value="<?= $group['groupId']; ?>"><?= $group['name']; ?></option>
+        <?php } ?>
+    </select>
+
     <button type="submit" class="me-3 btn btn-<?= button()['color'] ?>">
         <?= button()['content'] ?>
     </button>
@@ -118,15 +130,16 @@ function isEmailExists($email)
     return false;
 }
 
-if (isset($_REQUEST['name'], $_REQUEST['email'], $_REQUEST['password'])) {
+if (isset($_REQUEST['name'], $_REQUEST['email'], $_REQUEST['password'], $_REQUEST['group'])) {
     $name = $_REQUEST['name'];
     $email = $_REQUEST['email'];
     $password = $_REQUEST['password'];
+    $group = $_REQUEST['group'];
 
     // Update
     $id = $_REQUEST['edit'] ?? '';
 
-    if ($name === '' || $email === '' || $password === '') {
+    if ($name === '' || $email === '' || $password === '' || $group === '') {
         toast('error', "Please input all field");
         if ($id)
             setValueInputWhenEdit();
@@ -144,7 +157,7 @@ if (isset($_REQUEST['name'], $_REQUEST['email'], $_REQUEST['password'])) {
     }
 
     $password = hashPassword($password);
-    $isSuccess = $participantModel->upsertAParticipant($name, $email, $password, $id);
+    $isSuccess = $participantModel->upsertAParticipant($name, $email, $password, $group, $id);
 
     if ($isSuccess) {
         toast('success', ($id ? 'Update' : 'Create') . " a participant successful !");
@@ -168,6 +181,7 @@ function setValueInputWhenEdit()
         document.querySelector('[name=name]').value = '{$participant['name']}';
         document.querySelector('[name=email]').value = '{$participant['email']}';
         document.querySelector('[name=password]').value = '{$participant['password']}';
+        document.querySelector('[name=group]').value = '{$participant['groupId']}';
         document.querySelector('.nameUpdate').innerText = '{$participant['name']}';
     ");
 }

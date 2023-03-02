@@ -70,7 +70,7 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 
             $participantReset = $participantModel->getUniqueParticipantBy('email', $email);
 
-            $participantModel->upsertAParticipant($participantReset['name'], $email, hashPassword($randomPassword), $participantReset['id']);
+            $participantModel->upsertAParticipant($participantReset['name'], $email, hashPassword($randomPassword), $participantReset['groupId'], $participantReset['id']);
 
             if ($isSendEmailSuccess) {
                 reloadCurrentPage(1, '?login');
@@ -99,7 +99,8 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 
         if ($name) {
             $password = hashPassword($password);
-            $isSuccess = $participantModel->upsertAParticipant($name, $email, $password);
+            // Default register is STUDENT
+            $isSuccess = $participantModel->upsertAParticipant($name, $email, $password, '1');
 
             if ($isSuccess) {
                 toast('success', "Register successful! Login now !");

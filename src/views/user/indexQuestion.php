@@ -1,12 +1,15 @@
 <!-- BUGS: 
     - Khi finish chỉ tạm thời ẩn timer đếm ngược, thực tế timer đang được
     set value về đúng timer khởi tạo ban đầu
-    - Chưa thống kê được số câu đúng và sai 
+    - Chưa thống kê được số câu đúng và sai
+    - Nếu chỉ vừa chọn vừa bỏ answer question thì chưa tính đúng incorrect
+    - Khi random question thì lúc finish thì ko giữ nguyên mà random lại 
 -->
 <div class="container my-3">
     <?php
     $questions = $questionModel->getQuestionsByQuizId(+$_REQUEST['quizId']);
-    if (count($questions) === 0) {
+    $totalQuestion = count($questions);
+    if ($totalQuestion === 0) {
         echo "<h1 class='d-flex justify-content-center mt-5 pt-5 text-danger'>
         Can't found any question in this quiz :((
         </h1>";
@@ -17,9 +20,15 @@
     <form action="?" class="row mt-5 pt-5">
         <input type="text" name="quizId" hidden value="<?= $_REQUEST['quizId']; ?>">
         <div class="col-9">
-            <?php  ?>
+            <?php
+            $isRandomQuestions = $_SESSION['isRandomQuestions'] ?? false;
+            if (!$isRandomQuestions) {
+                shuffle($questions);
+                $_SESSION['isRandomQuestions'] = true;
+            }
+            ?>
             <?php foreach ($questions as $index => $question) { ?>
-                <div id="question-<?= $index + 1 ?>" class="card mb-5">
+                <div id="question-<?= $index + 1 ?>" class="questionMain card mb-5">
                     <div class="card-body text-center">
                         <img src="<?= getUrlImg($question['image']); ?>" alt="">
                         <h4 class="text-start mt-3">Question's <?= $index + 1 ?>: <?= $question['description'] ?></h4>
@@ -28,6 +37,13 @@
                     <div class="card_question card-footer">
                         <?php
                         $answers = $answerModel->getAnswersByQuestionId($question['id']);
+                        $isRandomAnswers = $_SESSION['isRandomAnswers'] ?? false;
+                        if (!$isRandomAnswers) {
+                            shuffle($answers);
+                            $_SESSION['isRandomAnswers'] = true;
+                        }
+                        ?>
+                        <?php
                         foreach ($answers as $indexAnswer => $answer) { ?>
                             <div class="form-check">
                                 <input data-questionIndex='<?= $index + 1 ?>' onclick="handleOnClick(this)" data-isCorrect="<?= $answer['isCorrect'] ?>" class="checkbox form-check-input" name="answerIds[<?= $answer['id']; ?>]" value="<?= $answer['id'] ?? ''; ?>" type="checkbox">
@@ -52,6 +68,7 @@
                     <?php } ?>
                 </div>
                 <div class="card-footer">
+                    <a class="btn btn-danger" id="history" href="?history&quizId=<?= $_REQUEST['quizId'];  ?>">Save result</a>
                     <button type="submit" class="btnFinish btn btn-info float-end">Finish</button>
 
                     <!-- Chưa xử lí được phần đếm số câu đúng / sai -->
@@ -76,6 +93,13 @@
 
 
 <?php
+
+useJavaScript("
+    if(!window.sessionStorage.getItem('timeStart'))
+        window.sessionStorage.setItem('timeStart', new Date().toLocaleString().replace(',', '').split(' ').join('|'));
+");
+
+
 function toggleColorQuestion()
 {
     useJavaScript("
@@ -119,7 +143,11 @@ function autoClickFinish()
 function disableAndCheckedCheckbox($answer, $isShowAnswer = 0)
 {
     useJavaScript("
-        document.querySelector('.btnFinish').classList.add('disabled');
+            if(!window.sessionStorage.getItem('incorrect')){
+                window.sessionStorage.setItem('incorrect', 0);
+            }
+            document.querySelector('.btnFinish').classList.add('disabled');
+
             for (const item of document.querySelectorAll('input')) {
                 item.disabled = true;
                 if(+item.value === +{$answer['id']}){
@@ -131,6 +159,7 @@ function disableAndCheckedCheckbox($answer, $isShowAnswer = 0)
                         item.checked = true;
                         if({$answer['isCorrect']} === 0){
                             item.classList.add('is-invalid');
+                            window.sessionStorage.setItem('incorrect', +window.sessionStorage.getItem('incorrect') + 1);
                         } else {
                             item.classList.add('is-valid');
                         }
@@ -140,8 +169,14 @@ function disableAndCheckedCheckbox($answer, $isShowAnswer = 0)
                     }
                 } 
             }
+
+            window.sessionStorage.setItem('timeEnd', new Date().toLocaleString().replace(',', '').split(' ').join('|'));
+            
+            document.getElementById('history').href += '&incorrect=' + (+window.sessionStorage.getItem('incorrect') + (document.querySelectorAll('.questionMain').length - JSON.parse(window.sessionStorage.getItem('checkedBefore'))?.length)) + '&timeStart=' + window.sessionStorage.getItem('timeStart') + '&timeEnd=' + window.sessionStorage.getItem('timeEnd');
     ");
 }
+
+
 
 function disableTimer()
 {
@@ -189,7 +224,5 @@ if (isset($_REQUEST['timeout'])) {
         disableAndCheckedCheckbox(['id' => '-1', 'isCorrect' => '-1'], 1);
     }
 }
-
-
 
 ?>
