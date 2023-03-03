@@ -24,9 +24,8 @@ CREATE TABLE history (
     id int NOT NULL AUTO_INCREMENT,
     quizId varchar(255),
     participantId varchar(255),
-     totalQuestion varchar(255),
     totalQuestionCorrect varchar(255),
-     timeStart varchar(255),
+    timeStart varchar(255),
     timeEnd varchar(255),
     PRIMARY KEY (id)
 );
@@ -48,6 +47,47 @@ CREATE TABLE participant (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE `group` (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(255)
+);
+
+CREATE TABLE `group_role` (
+  id int NOT NULL AUTO_INCREMENT,
+  groupId int NOT NULL,
+  roleId int NOT NULL
+);
+
+CREATE TABLE `role` (
+  id int NOT NULL AUTO_INCREMENT,
+  url varchar(255)
+);
+
+
+INSERT INTO `role` (`id`, `url`) VALUES
+(1, '/quiz/read'),
+(2, '/participant/read'),
+(3, '/question/read'),
+(4, '/question/create'),
+(5, '/history/read'),
+(6, '/quiz/read'),
+(7, '/all');
+
+INSERT INTO `group_role` (`id`, `groupId`, `roleId`) VALUES
+(1, 2, 7),
+(2, 1, 1),
+(3, 1, 2),
+(4, 1, 3),
+(5, 1, 4),
+(6, 1, 5),
+(7, 1, 6),
+
+
+
+INSERT INTO `group` (`id`, `name`) VALUES
+(1, 'STUDENT'),
+(2, 'ADMIN');
+
 
 
 
@@ -62,13 +102,9 @@ INSERT INTO quiz_question (quizId, questionId) VALUES
 ('2', '1'), 
 ('2', '2');
 
-INSERT INTO history (quizId, participantId) VALUES 
-('1', '1'), 
-('1', '2'), 
-('2', '2');
-
 INSERT INTO participant (name, email, password, groupId) VALUES 
-('trung', 'trung@gmail.com', '123456', '2'), 
+('admin', 'admin@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '2'), 
+('trung', 'trung@gmail.com', '123456', '1'), 
 ('long', 'long@gmail.com', '123456', '1'), 
 ('an', 'an@gmail.com', '123456', '1');
 

@@ -60,7 +60,7 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
         return toast('error', 'Please input all field');
     }
 
-    $participant = $participantModel->getUniqueParticipantBy('email', $email);
+    $participant = $participantModel->getUniqueParticipantBy(['email' => $email]);
 
     if ($participant) {
 
@@ -68,7 +68,7 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
             $randomPassword = random_int(0, 10000);
             $isSendEmailSuccess = sendEmail($email, 'Reset password', "Your new password is <h1>$randomPassword</h1>");
 
-            $participantReset = $participantModel->getUniqueParticipantBy('email', $email);
+            $participantReset = $participantModel->getUniqueParticipantBy(['email' => $email]);
 
             $participantModel->upsertAParticipant($participantReset['name'], $email, hashPassword($randomPassword), $participantReset['groupId'], $participantReset['id']);
 
@@ -100,9 +100,9 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
         if ($name) {
             $password = hashPassword($password);
             // Default register is STUDENT
-            $isSuccess = $participantModel->upsertAParticipant($name, $email, $password, '1');
+            $isSuccessRegister = $participantModel->upsertAParticipant($name, $email, $password, '1');
 
-            if ($isSuccess) {
+            if ($isSuccessRegister) {
                 toast('success', "Register successful! Login now !");
                 return reloadCurrentPage(1, '?login');
             } else {
@@ -116,9 +116,10 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 
 
     if ($isSuccess) {
-        if ($_SESSION['user']['email'] === $_ENV['EMAIL_ADMIN']) {
+        if ($_SESSION['user']['groupName'] !== 'STUDENT') {
             return reloadCurrentPage(1, '?admin&participant&page=1');
         }
+
         reloadCurrentPage(1, '?');
     } else {
         reloadCurrentPage(1, '?login');

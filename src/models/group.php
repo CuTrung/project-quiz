@@ -20,12 +20,9 @@ class Group
         $selectAll = "SELECT g.id as groupId, g.name FROM `group` g" . ($quantity ? "LIMIT $quantity" : "");
         $listGroupsAll = $GLOBALS['db']->executeQuery($selectAll);
 
-
-
         foreach ($listGroupsAll as $key => $item) {
             $listGroupsAll[$key] = [...$item, "roleId" => '', 2 => '', "url" => '', 3 => ''];
         }
-
 
         $arrayCombine = array_merge($listGroupsAll, $listGroups);
         $arrayMerge = mergeArraySameKeys($arrayCombine, 1);
@@ -80,6 +77,7 @@ class Group
 
     public function deleteGroup_RoleBy($condition)
     {
+
         $column = key($condition);
         $query = "DELETE FROM group_role WHERE $column = '{$condition[$column]}'";
 

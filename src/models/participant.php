@@ -31,12 +31,21 @@ class Participant
         ];
     }
 
-    public function getUniqueParticipantBy($column, $value)
+    public function getUniqueParticipantBy($condition)
     {
-        $select = "SELECT * FROM participant WHERE $column = '$value'";
+        $column = key($condition);
+        $select = "SELECT p.id, p.name, p.email, p.password, p.groupId, g.name as groupName, r.url FROM participant p INNER JOIN `group` g ON g.id = p.groupId INNER JOIN group_role g_r ON g_r.groupId = g.id INNER JOIN `role` r ON r.id = g_r.roleId WHERE p.$column = '{$condition[$column]}'";
 
-        if (count($GLOBALS['db']->executeQuery($select)) === 0) return null;
-        return $GLOBALS['db']->executeQuery($select)[0];
+        $listParticipants = $GLOBALS['db']->executeQuery($select);
+
+        if (count($listParticipants) === 0) return null;
+
+        $listParticipants[0]['url'] = [$listParticipants[0]['url']];
+        for ($i = 1; $i < count($listParticipants); $i++) {
+            $listParticipants[0]['url'] = [...$listParticipants[0]['url'], $listParticipants[$i]['url']];
+        }
+
+        return $listParticipants[0];
     }
 
     public function upsertAParticipant($name, $email, $password, $group, $id = '')
@@ -55,7 +64,12 @@ class Participant
     public function deleteAParticipant($id)
     {
         $query = "DELETE FROM participant WHERE id = ?";
-
         return $GLOBALS['db']->executeQuery($query, [$id]);
+    }
+
+    public function updateParticipantsGroupId($oldGroupId, $newGroupId)
+    {
+        $query = "UPDATE participant SET groupId = ? WHERE groupId = ?";
+        return $GLOBALS['db']->executeQuery($query, [$newGroupId, $oldGroupId]);
     }
 }

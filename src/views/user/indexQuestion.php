@@ -17,7 +17,7 @@
     }
     ?>
 
-    <form action="?" class="row mt-5 pt-5">
+    <form action="?question&quizId=<?= $_REQUEST['quizId']; ?>" class="row mt-5 pt-5" method="post">
         <input type="text" name="quizId" hidden value="<?= $_REQUEST['quizId']; ?>">
         <div class="col-9">
             <?php

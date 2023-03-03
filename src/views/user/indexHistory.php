@@ -1,5 +1,4 @@
 <?php
-
 $userId = $_SESSION['user']['id'];
 
 if (isset($_REQUEST['quizId']) && isset($_REQUEST['incorrect']) && isset($_REQUEST['timeStart']) && isset($_REQUEST['timeEnd'])) {

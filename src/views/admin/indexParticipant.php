@@ -7,12 +7,14 @@
 -->
 <?php
 
+
+
+
 $GLOBALS['participantModel'] = $participantModel;
 $participants = $participantModel->getParticipants();
 
-$groups = $groupModel->getGroups();
-
-logArray($groups);
+$listGroups = $groupModel->getGroups();
+$listGroupsMerge = mergeArraySameKeys($listGroups, 'name');
 
 if (isset($_REQUEST['page'])) {
     $page = $_REQUEST['page'];
@@ -61,15 +63,15 @@ function button()
 
     <select name="group" class="form-select mb-3 w-25" aria-label="Default select example">
         <option hidden selected value="">Choose group</option>
-        <?php foreach ($groups as $key => $group) { ?>
-            <option value="<?= $group['groupId']; ?>"><?= $group['name']; ?></option>
+        <?php foreach ($listGroupsMerge as $key => $group) { ?>
+            <option value="<?= $group[0]['groupId']; ?>"><?= $key; ?></option>
         <?php } ?>
     </select>
 
     <button type="submit" class="me-3 btn btn-<?= button()['color'] ?>">
         <?= button()['content'] ?>
     </button>
-    <a href='?admin&participant' class='btn btn-<?= button()['auxiliaryColor'] ?>'>
+    <a href='?admin&participant&page=<?= $page; ?>' class='btn btn-<?= button()['auxiliaryColor'] ?>'>
         <?= button()['auxiliaryContent'] ?>
     </a>
 
@@ -96,7 +98,7 @@ function button()
                 <td><?= $participant['email'] ?></td>
                 <td>
                     <a href="?admin&participant&page=<?= $page; ?>&edit=<?= $participant['id']; ?>" class="btn btn-warning">Edit</a>
-                    <a href="?admin&participant&delete=<?= $participant['id']; ?>" class="btn btn-danger">Delete</a>
+                    <a href="?admin&participant&delete=<?= $participant['id'] . "&page=" . $page; ?>" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         <?php } ?>
@@ -113,6 +115,7 @@ if (isset($_REQUEST['page']))
 
 <?php
 
+
 useJavaScript("
     function handleEye(e){
         e.classList.toggle('fa-eye-slash');
@@ -125,7 +128,7 @@ useJavaScript("
 
 function isEmailExists($email)
 {
-    $participant = $GLOBALS['participantModel']->getUniqueParticipantBy('email', $email);
+    $participant = $GLOBALS['participantModel']->getUniqueParticipantBy(['email' => $email]);
     if ($participant) return true;
     return false;
 }
@@ -176,7 +179,7 @@ if (isset($_REQUEST['name'], $_REQUEST['email'], $_REQUEST['password'], $_REQUES
 
 function setValueInputWhenEdit()
 {
-    $participant = $GLOBALS['participantModel']->getUniqueParticipantBy('id', $_REQUEST['edit']);
+    $participant = $GLOBALS['participantModel']->getUniqueParticipantBy(['id' => $_REQUEST['edit']]);
     useJavaScript("
         document.querySelector('[name=name]').value = '{$participant['name']}';
         document.querySelector('[name=email]').value = '{$participant['email']}';
@@ -200,6 +203,6 @@ if (isset($_REQUEST['delete'])) {
     }
 
     // Reload page in order to clear form data 
-    reloadCurrentPage(1, '?admin&participant');
+    reloadCurrentPage(1, "?admin&participant&page=$page");
 }
 ?>

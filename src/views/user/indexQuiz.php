@@ -17,6 +17,8 @@ if (isset($_REQUEST['search'])) {
     else
         toast("error", 'Not found quizzes');
 }
+
+
 ?>
 
 

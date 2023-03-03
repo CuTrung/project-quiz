@@ -1,7 +1,6 @@
 <?php
-if ($_SESSION['user']['email'] !== $_ENV['EMAIL_ADMIN']) {
-    reloadCurrentPage(0, '?login');
-    return;
+if ($_SESSION['user']['groupName'] === 'STUDENT') {
+    return reloadCurrentPage(0, '?');
 }
 ?>
 

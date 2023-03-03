@@ -8,8 +8,14 @@ $param = explode('&', $_SERVER['QUERY_STRING'])[0];
 $result = in_array($param, ["login", "logout", "", "register", "forget"]);
 if (!$result && !$_SESSION['user']) {
     // Login mới cho đi tiếp
-    reloadCurrentPage(0, '?login');
+    return reloadCurrentPage(0, '?login');
 }
+
+if (!$result && !checkPermission()) {
+    return toast("error", "You do not permission to access this resources !");
+}
+
+
 
 switch ($param) {
     case 'register':

@@ -39,8 +39,8 @@ if (isset($_REQUEST['role'])) {
             <span class='d-flex gap-3 flex-wrap'>
                 <?php foreach ($listRoles as $role) { ?>
                     <span class='d-flex gap-2'>
-                        <input name="role[]" class="role form-check-input" type="checkbox" data-groupId="<?= $role['groupId'] ?? '' ?>" value="<?= $role['id'] ?>"> <?= $role['url']; ?>
-                        <a href="?admin&role&roleId=<?= $role['id'] ?>">
+                        <input name="role[]" class="role form-check-input" type="checkbox" data-groupId="<?= $role['groupId'] ?? '' ? implode('-', $role['groupId']) : ''; ?>" value="<?= $role['id'] ?>"> <?= $role['url']; ?>
+                        <a href="?admin&role&delete&roleId=<?= $role['id'] ?>">
                             <i class="fa-solid fa-trash text-danger mt-1"></i>
                         </a>
                     </span>
@@ -67,7 +67,7 @@ if (isset($_REQUEST['role'])) {
                     <tr>
                         <td>
                             <?= $keyGroup ?>
-                            <a href="?admin&group&groupId=<?= $group[0]['groupId'];  ?>">
+                            <a href="?admin&group&delete&groupId=<?= $group[0]['groupId'];  ?>">
                                 <i class="fa-solid fa-trash text-danger float-end"></i>
                             </a>
                         </td>
@@ -75,7 +75,7 @@ if (isset($_REQUEST['role'])) {
                             <?php foreach ($group as $key => $role) { ?>
                                 <?php $key++; ?>
                                 <p class="m-0 mb-1 <?= $role['url'] ? '' : 'd-none'; ?>"><?= "<strong>$key. </strong>" . $role['url']; ?>
-                                    <a href="?admin&role&roleListId=<?= $role['roleId']; ?>">
+                                    <a href="?admin&role&delete&roleListId=<?= $role['roleId'] . '&groupRoleListId=' . $group[0]['groupId']; ?>">
                                         <i class="fa-solid fa-trash text-danger float-end"></i>
                                     </a>
                                 </p>
@@ -83,7 +83,6 @@ if (isset($_REQUEST['role'])) {
                         </td>
                     </tr>
                 <?php } ?>
-
             </tbody>
         </table>
     </div>
@@ -97,7 +96,7 @@ useJavaScript("
     function handleSelect(e){
         for (const item of document.querySelectorAll('.role')) {
             item.checked = false;
-            if(+e.value === +item.getAttribute('data-groupId')){
+            if(item.getAttribute('data-groupId').split('-').includes(e.value)){
                 item.checked = true;
             }
         }
@@ -121,11 +120,12 @@ if (isset($_REQUEST['url']) || isset($_REQUEST['name'])) {
 
 if (isset($_REQUEST['roleListId']) || isset($_REQUEST['roleId']) || isset($_REQUEST['groupId'])) {
     $roleListId = $_REQUEST['roleListId'] ?? '';
+    $groupRoleListId = $_REQUEST['groupRoleListId'] ?? '';
     $roleId = $_REQUEST['roleId'] ?? '';
     $groupId = $_REQUEST['groupId'] ?? '';
 
-    if ($roleListId !== '') {
-        $groupModel->deleteGroup_RoleBy(['roleId' => $roleListId]);
+    if ($roleListId !== '' && $groupRoleListId !== '') {
+        $groupModel->deleteGroup_RoleBy(['groupId' => $groupRoleListId, 'roleId' => $roleListId]);
     }
 
     if ($roleId !== '') {
@@ -135,6 +135,9 @@ if (isset($_REQUEST['roleListId']) || isset($_REQUEST['roleId']) || isset($_REQU
 
     if ($groupId !== '') {
         $groupModel->deleteGroup_RoleBy(['groupId' => $groupId]);
+        // Update groupId of participant to STUDENT
+        $participantModel->updateParticipantsGroupId($groupId, 1);
+
         $groupModel->deleteGroupsBy(['id' => $groupId]);
     }
 

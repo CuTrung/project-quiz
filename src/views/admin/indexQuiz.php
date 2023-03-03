@@ -31,7 +31,7 @@ $listQuizzes = $quizModel->getQuizzes();
             <?php foreach ($listQuizzes as $quiz) { ?>
                 <tr>
                     <td><?= $quiz['name']; ?>
-                        <a href="?admin&quiz&delQuiz=<?= $quiz['id']; ?>">
+                        <a href="?admin&quiz&delete&delQuiz=<?= $quiz['id']; ?>">
                             <i style="cursor: pointer;" class="fa-solid fa-trash text-danger float-end"></i>
                         </a>
 
@@ -45,7 +45,7 @@ $listQuizzes = $quizModel->getQuizzes();
                         <?php foreach ($listQuestions as $key => $question) { ?>
                             <?php $key++; ?>
                             <p class="m-0 mb-1"><?= "<strong>$key. </strong>" . $question['description']; ?>
-                                <a href="?admin&quiz&delQues=<?= $question['id']; ?>">
+                                <a href="?admin&quiz&delete&delQues=<?= $question['id']; ?>">
                                     <i style="cursor: pointer;" class="fa-solid fa-trash text-danger float-end"></i>
                                 </a>
                             </p>
@@ -58,7 +58,7 @@ $listQuizzes = $quizModel->getQuizzes();
                             <?php foreach ($answerModel->getAnswersByQuestionId($question['id']) as $keyAns => $answer) { ?>
                                 <?php $keyAns++; ?>
                                 <p class="m-0 mb-2"><?= "<strong>$keyAns. </strong>" . $answer['description']; ?>
-                                    <a href="?admin&quiz&delAns=<?= $answer['id']; ?>">
+                                    <a href="?admin&quiz&delete&delAns=<?= $answer['id']; ?>">
                                         <i style="cursor: pointer;" class="fa-solid fa-trash text-danger float-end"></i>
                                     </a>
                                 </p>

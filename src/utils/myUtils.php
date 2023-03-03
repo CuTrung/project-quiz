@@ -179,3 +179,48 @@ function mergeArraySameKeys($array, $key)
 
     return $outer_array;
 }
+
+function getFormatUrl()
+{
+    $method = $_SERVER['REQUEST_METHOD'];
+    $newMethod = 'delete';
+    switch ($method) {
+        case 'POST':
+            $newMethod = 'create';
+            break;
+        case 'GET':
+            $newMethod = 'read';
+            break;
+        default:
+            break;
+    }
+
+    $newUrl = str_replace('admin&', '', $_SERVER['QUERY_STRING']);
+
+    $param = explode('&', $newUrl)[0];
+    return  '/' . $param . '/' . $newMethod;
+}
+
+function checkPermission()
+{
+    $isPermission = true;
+    if (isset($_SESSION['user']) && $_SESSION['user']['url']) {
+        $urls = $_SESSION['user']['url'];
+    }
+
+
+    // SUPER ADMIN
+    if (in_array('/all', $urls)) return $isPermission;
+
+    if (isset($_REQUEST['delete'])) {
+        foreach ($urls as $url) {
+            if (str_contains($url, '/delete')) {
+                return $isPermission;
+            }
+        }
+    }
+
+    $isPermission = in_array(getFormatUrl(), $urls);
+
+    return $isPermission;
+}
