@@ -17,7 +17,7 @@
     }
     ?>
 
-    <form action="?question&quizId=<?= $_REQUEST['quizId']; ?>" class="row mt-5 pt-5" method="post">
+    <form action="?question&timeout" class="row mt-5 pt-5" method="post">
         <input type="text" name="quizId" hidden value="<?= $_REQUEST['quizId']; ?>">
         <div class="col-9">
             <?php
@@ -68,22 +68,8 @@
                     <?php } ?>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-danger" id="history" href="?history&quizId=<?= $_REQUEST['quizId'];  ?>">Save result</a>
+                    <a class="btn btn-danger <?= isset($_REQUEST['timeout']) ?? '' ? '' : 'd-none';  ?>" id="history" href="?history&quizId=<?= $_REQUEST['quizId'];  ?>">Save result</a>
                     <button type="submit" class="btnFinish btn btn-info float-end">Finish</button>
-
-                    <!-- Chưa xử lí được phần đếm số câu đúng / sai -->
-                    <!-- <table class="table table-hover mt-5 ">
-                        <tbody>
-                            <tr>
-                                <td class="text-danger">Wrong</td>
-                                <td class="wrong text-danger">0</td>
-                            </tr>
-                            <tr>
-                                <td class="text-success">Correct</td>
-                                <td class="correct text-success">0</td>
-                            </tr>
-                        </tbody>
-                    </table> -->
                 </div>
             </div>
         </div>
