@@ -183,11 +183,4 @@ if (isset($_FILES['fileImgQuiz']) || isset($_FILES['fileImgQuestion'])) {
 
     return reloadCurrentPage(1, '?admin&quiz');
 }
-
-
-
-
-
-
-
 ?>
