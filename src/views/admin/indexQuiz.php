@@ -9,7 +9,7 @@ $listQuizzes = $quizModel->getQuizzes();
 <form id="formUpload" action="?admin&quiz" method="post" enctype="multipart/form-data" class="d-flex gap-3 border border-2 border-success p-2 w-75 container">
     <h3>Add new quiz - question - answer</h3>
     <input onchange="handleUpload()" hidden type="file" name="fileUpload" id="upload">
-    <label class="btn btn-outline-info" for="upload">Import excel</label>
+    <label class="labelExcel btn btn-outline-info" for="upload">Import excel</label>
     <button type="submit" class="btn btn-primary">
         Submit
     </button>
@@ -30,11 +30,21 @@ $listQuizzes = $quizModel->getQuizzes();
         <tbody>
             <?php foreach ($listQuizzes as $quiz) { ?>
                 <tr>
-                    <td><?= $quiz['name']; ?>
-                        <a href="?admin&quiz&delete&delQuiz=<?= $quiz['id']; ?>">
-                            <i style="cursor: pointer;" class="fa-solid fa-trash text-danger float-end"></i>
-                        </a>
-
+                    <td>
+                        <form action="?admin&quiz" method="post" enctype="multipart/form-data">
+                            <input hidden id="quizImg-<?= $quiz['id']; ?>" type="file" name="fileImgQuiz">
+                            <input hidden type="text" name="quizId" value="<?= $quiz['id']; ?>">
+                            <p class="float-start"><?= $quiz['name']; ?></p>
+                            <span class="float-end">
+                                <label for="quizImg-<?= $quiz['id']; ?>">
+                                    <i style="cursor: pointer;" class="fa-solid fa-image text-info"></i>
+                                </label>
+                                <button class="btnSubmit btn btn-sm btn-outline-primary mx-2 py-0">submit</button>
+                                <a href="?admin&quiz&delete&delQuiz=<?= $quiz['id']; ?>">
+                                    <i style="cursor: pointer;" class="fa-solid fa-trash text-danger float-end mt-1"></i>
+                                </a>
+                            </span>
+                        </form>
                     </td>
                     <td><?= $quiz['difficulty']; ?></td>
                     <?php
@@ -44,11 +54,21 @@ $listQuizzes = $quizModel->getQuizzes();
                     <td>
                         <?php foreach ($listQuestions as $key => $question) { ?>
                             <?php $key++; ?>
-                            <p class="m-0 mb-1"><?= "<strong>$key. </strong>" . $question['description']; ?>
-                                <a href="?admin&quiz&delete&delQues=<?= $question['id']; ?>">
-                                    <i style="cursor: pointer;" class="fa-solid fa-trash text-danger float-end"></i>
-                                </a>
-                            </p>
+                            <form action="?admin&quiz" method="post" enctype="multipart/form-data">
+                                <?= "<strong>$key. </strong>" . $question['description']; ?>
+                                <input hidden id="questionImg-<?= $question['id']; ?>" type="file" name="fileImgQuestion">
+                                <input hidden type="text" name="questionId" value="<?= $question['id']; ?>">
+                                <p class="m-0 mb-1 float-end">
+                                    <label for="questionImg-<?= $question['id']; ?>">
+                                        <i style="cursor: pointer;" class="fa-solid fa-image text-info"></i>
+                                    </label>
+                                    <button class="btnSubmit btn btn-sm btn-outline-primary mx-2 py-0">submit</button>
+
+                                    <a href="?admin&quiz&delete&delQues=<?= $question['id']; ?>">
+                                        <i style="cursor: pointer;" class="fa-solid fa-trash text-danger float-end"></i>
+                                    </a>
+                                </p>
+                            </form>
                             <?= $key === count($listQuestions) ? '' : '<hr>'; ?>
                         <?php } ?>
                     </td>
@@ -74,17 +94,12 @@ $listQuizzes = $quizModel->getQuizzes();
 </div>
 
 
-
-<script>
-    document.getElementById().rem
-</script>
-
 <?php
 
 useJavaScript("
     function handleUpload() {
         let file = document.getElementById('upload').files[0];
-        document.querySelector('label').textContent = file.name;
+        document.querySelector('.labelExcel').textContent = file.name;
     }
 ");
 
@@ -145,6 +160,29 @@ if (isset($_REQUEST['delQuiz']) || isset($_REQUEST['delQues']) || isset($_REQUES
     reloadCurrentPage(1, '?admin&quiz');
 }
 
+if (isset($_FILES['fileImgQuiz']) || isset($_FILES['fileImgQuestion'])) {
+    $isSuccess = false;
+    $quizId = $_REQUEST['quizId'];
+    if ($quizId) {
+        $isSuccess = uploadImage('fileImgQuiz');
+        $quizModel->updateImageQuizById($_FILES['fileImgQuiz']['name'], $quizId);
+    }
+
+    $questionId = $_REQUEST['questionId'];
+    if ($questionId) {
+        $isSuccess = uploadImage('fileImgQuestion');
+        $questionModel->updateImageQuestionById($_FILES['fileImgQuestion']['name'], $questionId);
+    }
+
+    if ($isSuccess) {
+        $mess = $quizId ? 'quiz' : 'question';
+        toast("success", "Upload $mess image successful !");
+    } else {
+        toast("error", "Upload image failed !");
+    }
+
+    return reloadCurrentPage(1, '?admin&quiz');
+}
 
 
 

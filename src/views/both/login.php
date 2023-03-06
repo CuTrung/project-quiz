@@ -120,7 +120,7 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
             return reloadCurrentPage(1, '?admin&participant&page=1');
         }
 
-        reloadCurrentPage(1, '?');
+        reloadCurrentPage(1, '?quiz');
     } else {
         reloadCurrentPage(1, '?login');
     }

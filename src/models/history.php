@@ -53,8 +53,6 @@ class History
         $timeStart = $data['timeStart'];
         $timeEnd = $data['timeEnd'];
 
-        // $query = "UPDATE history SET totalQuestionCorrect=?, timeStart=?, timeEnd=? WHERE quizId=? AND participantId=?";
-
         $query = "INSERT INTO history (quizId, participantId, totalQuestionCorrect, timeStart, timeEnd) VALUES (?, ?, ?, ?, ?)";
 
         return $GLOBALS['db']->executeQuery($query, [$quizId, $participantId, $totalQuestionCorrect, $timeStart, $timeEnd]);

@@ -47,4 +47,11 @@ class Question
 
         return $GLOBALS['db']->executeQuery($query);
     }
+
+    public function updateImageQuestionById($image, $id)
+    {
+        $query = "UPDATE question SET `image`=? WHERE id=?";
+
+        return $GLOBALS['db']->executeQuery($query, [$image, $id]);
+    }
 }

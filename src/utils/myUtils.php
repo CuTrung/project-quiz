@@ -224,3 +224,25 @@ function checkPermission()
 
     return $isPermission;
 }
+
+function uploadImage($nameFile)
+{
+    $allow = array("jpg", "jpeg", "gif", "png");
+
+    $toDir = getcwd() . '/src/assets/img/';
+    $isSuccess = false;
+
+    if (isset($_FILES[$nameFile]) && $_FILES[$nameFile]['tmp_name']) // is the file uploaded yet?
+    {
+        $info = explode('.', strtolower($_FILES[$nameFile]['name'])); // whats the extension of the file
+
+        if (in_array(end($info), $allow)) // is this file allowed
+        {
+            if (move_uploaded_file($_FILES[$nameFile]['tmp_name'], $toDir . basename($_FILES[$nameFile]['name']))) {
+                $isSuccess = true;
+            }
+        }
+    }
+
+    return $isSuccess;
+}

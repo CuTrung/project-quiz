@@ -69,4 +69,11 @@ class Quiz
 
         return $GLOBALS['db']->executeQuery($select);
     }
+
+    public function updateImageQuizById($image, $id)
+    {
+        $query = "UPDATE quiz SET `image`=? WHERE id=?";
+
+        return $GLOBALS['db']->executeQuery($query, [$image, $id]);
+    }
 }
