@@ -55,7 +55,7 @@ class Group
     public function getGroupsBy($condition)
     {
         $column = key($condition);
-        $query = "SELECT * FROM group WHERE $column = '{$condition[$column]}'";
+        $query = "SELECT * FROM `group` WHERE $column = '{$condition[$column]}'";
 
         return $GLOBALS['db']->executeQuery($query);
     }
@@ -80,6 +80,12 @@ class Group
 
         $column = key($condition);
         $query = "DELETE FROM group_role WHERE $column = '{$condition[$column]}'";
+
+        if (count($condition) === 2) {
+            $groupId = $condition['groupId'];
+            $roleId = $condition['roleId'];
+            $query = "DELETE FROM group_role WHERE groupId = $groupId AND roleId = $roleId";
+        }
 
         return $GLOBALS['db']->executeQuery($query);
     }

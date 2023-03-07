@@ -106,16 +106,36 @@ useJavaScript("
 if (isset($_REQUEST['url']) || isset($_REQUEST['name'])) {
     $url = $_REQUEST['url'] ?? '';
     $name = $_REQUEST['name'] ?? '';
+    $isCreatedSuccess = false;
 
     if ($url !== '') {
-        $roleModel->createANewRole($url);
+        $isExistRole = $roleModel->getRolesBy(['url' => $url]);
+
+        if (count($isExistRole) > 0) {
+            toast("error", "Url is existed !");
+        } else {
+            $roleModel->createANewRole($url);
+            $isCreatedSuccess = true;
+        }
     }
 
     if ($name !== '') {
-        $groupModel->createANewGroup(strtoupper($name));
+        $isExistGroup = $groupModel->getGroupsBy(['name' => strtoupper($name)]);
+
+        if (count($isExistGroup) > 0) {
+            toast("error", "Group name is existed !");
+        } else {
+            $groupModel->createANewGroup(strtoupper($name));
+            $isCreatedSuccess = true;
+        }
     }
 
-    reloadCurrentPage(0);
+    if ($isCreatedSuccess) {
+        $message = $url ? 'url' : 'group name';
+        toast("success", "Create $message successful !");
+    }
+
+    reloadCurrentPage(1);
 }
 
 if (isset($_REQUEST['roleListId']) || isset($_REQUEST['roleId']) || isset($_REQUEST['groupId'])) {

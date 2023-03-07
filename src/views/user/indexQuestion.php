@@ -17,7 +17,7 @@
     }
     ?>
 
-    <form action="?question&timeout" class="row mt-5 pt-5" method="post">
+    <form action="?question&quizId=<?= $_REQUEST['quizId']; ?>&timeout" class="row mt-5 pt-5" method="post">
         <input type="text" name="quizId" hidden value="<?= $_REQUEST['quizId']; ?>">
         <div class="col-9">
             <?php
@@ -68,7 +68,7 @@
                     <?php } ?>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-danger <?= isset($_REQUEST['timeout']) ?? '' ? '' : 'd-none';  ?>" id="history" href="?history&quizId=<?= $_REQUEST['quizId'];  ?>">Save result</a>
+                    <a class="btnResult btn btn-danger <?= isset($_REQUEST['timeout']) ?? '' ? '' : 'd-none';  ?>" id="history" href="?history&quizId=<?= $_REQUEST['quizId'];  ?>">Save result</a>
                     <button type="submit" class="btnFinish btn btn-info float-end">Finish</button>
                 </div>
             </div>
@@ -153,6 +153,8 @@ function disableAndCheckedCheckbox($answer, $isShowAnswer = 0)
                     if(+item.getAttribute('data-isCorrect') === 1){
                         item.classList.add('is-valid');
                     }
+                } else {
+                    document.querySelector('.btnResult').classList.add('d-none');
                 } 
             }
 
@@ -207,7 +209,7 @@ if (isset($_REQUEST['timeout'])) {
         }
     } else {
         // Khi ko check
-        disableAndCheckedCheckbox(['id' => '-1', 'isCorrect' => '-1'], 1);
+        disableAndCheckedCheckbox(['id' => '-1', 'isCorrect' => '-1'], 0);
     }
 }
 

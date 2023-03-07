@@ -7,9 +7,6 @@
 -->
 <?php
 
-
-
-
 $GLOBALS['participantModel'] = $participantModel;
 $participants = $participantModel->getParticipants();
 
@@ -52,7 +49,7 @@ function button()
         <label for="floatingInput">Name</label>
     </div>
     <div class="form-floating mb-3">
-        <input name="email" type="text" class="form-control" placeholder="name@example.com">
+        <input name="email" type="email" class="form-control" placeholder="name@example.com">
         <label for="floatingInput">Email</label>
     </div>
     <div class="form-floating mb-3 position-relative">
@@ -79,42 +76,72 @@ function button()
 
 
 <!-- List participants -->
-<table class="table table-hover table-bordered">
-    <h3 class="my-3">List participants</h3>
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        foreach ($participants as $index => $participant) { ?>
+<table class="table table-hover table-bordered mt-3">
+    <?php if (isset($_REQUEST['participantId'])) { ?>
+        <?php $histories = $historyModel->getHistoriesBy(["participantId" => $_REQUEST['participantId']]); ?>
+        <h3 class="text-center">
+            Histories of <span class="text-danger fst-italic"><?= $_REQUEST['name']; ?></span>
+            <a href="?admin&participant&page=<?= $page ?>" class="btn btn-danger float-end me-3">Cancel</a>
+        </h3>
+        <thead>
             <tr>
-                <th><?= $index + 1 ?></th>
-                <td><?= $participant['name'] ?></td>
-                <td><?= $participant['email'] ?></td>
-                <td>
-                    <a href="?admin&participant&page=<?= $page; ?>&edit=<?= $participant['id']; ?>" class="btn btn-warning">Edit</a>
-                    <a href="?admin&participant&delete=<?= $participant['id'] . "&page=" . $page; ?>" class="btn btn-danger">Delete</a>
-                </td>
+                <th scope="col">Name quiz</th>
+                <th scope="col">Difficulty</th>
+                <th scope="col">Correct / Total (Question)</th>
+                <th scope="col">Time start</th>
+                <th scope="col">Time end</th>
             </tr>
-        <?php } ?>
-    </tbody>
+        </thead>
+        <tbody>
+            <?php foreach ($histories as $history) { ?>
+                <tr>
+                    <td><?= $history['quizName']; ?></td>
+                    <td><?= $history['difficulty']; ?></td>
+                    <td><?= $history['timeStart'] ? $history['totalQuestionCorrect'] . '/' . count($quizModel->getQuiz_QuestionBy(['quizId' => $history['quizId']])) : '' ?></td>
+                    <td><?= $history['timeStart']; ?></td>
+                    <td><?= $history['timeEnd']; ?></th>
+                </tr>
+            <?php } ?>
+        </tbody>
+    <?php } else { ?>
+        <h3 class="text-center my-3">List participants</h3>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            foreach ($participants as $index => $participant) { ?>
+                <tr>
+                    <th><?= $index + 1 ?></th>
+                    <td><?= $participant['name'] ?></td>
+                    <td><?= $participant['email'] ?></td>
+                    <td class="d-flex gap-2">
+                        <a href="?admin&participant&page=<?= $page; ?>&participantId=<?= $participant['id']; ?>&name=<?= $participant['name'] ?>" class="btn btn-secondary">View history</a>
+                        <a href="?admin&participant&page=<?= $page; ?>&edit=<?= $participant['id']; ?>" class="btn btn-warning">Edit</a>
+                        <a href="?admin&participant&delete=<?= $participant['id'] . "&page=" . $page; ?>" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    <?php } ?>
 </table>
 
 <!-- Pagination -->
-<?php include $controller->render('views/both/pagination.php');
+<?php
+if (isset($_REQUEST['participantId'])) return;
 
+include $controller->render('views/both/pagination.php');
 if (isset($_REQUEST['page']))
     Pagination((int)$dataParticipantsWithPagination['totalPages']);
 
 ?>
 
 <?php
-
 
 useJavaScript("
     function handleEye(e){

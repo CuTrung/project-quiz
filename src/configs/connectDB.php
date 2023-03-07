@@ -14,15 +14,15 @@ class ConnectDB
         }
     }
 
-    public function get($select)
-    {
-        return $this->db->query($select)->fetchAll();
-    }
+    // public function get($select)
+    // {
+    //     return $this->db->query($select)->fetchAll();
+    // }
 
-    public function insert($query, $value)
-    {
-        return $this->db->prepare($query)->execute($value);
-    }
+    // public function insert($query, $value)
+    // {
+    //     return $this->db->prepare($query)->execute($value);
+    // }
 
     public function executeQuery($query, $value = [])
     {

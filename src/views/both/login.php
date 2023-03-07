@@ -29,9 +29,10 @@ if (isset($_REQUEST['forget'])) {
             <input data-isForget="<?= $isForget; ?>" name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
             <label for="floatingInput">Email address</label>
         </div>
-        <div class="form-floating mb-3 text-start <?= $isForget ? 'd-none' : ''; ?>">
+        <div class="form-floating position-relative mb-3 text-start <?= $isForget ? 'd-none' : ''; ?>">
             <input name="password" type="text" class="form-control" id="floatingPassword" placeholder="Password">
             <label for="floatingPassword">Password</label>
+            <i onclick="handleEye(this)" class="eye fa-solid fa-eye position-absolute top-0 end-0"></i>
         </div>
 
         <button type="submit" class="btn btn-<?= $isRegister ? 'info' : 'primary'; ?> w-100">Submit</button>
@@ -45,13 +46,22 @@ if (isset($_REQUEST['forget'])) {
 
 <?php
 
+useJavaScript("
+    function handleEye(e){
+        e.classList.toggle('fa-eye-slash');
+        if(e.classList.contains('fa-eye-slash'))
+            e.parentNode.querySelector('input').type = 'password';
+        else
+            e.parentNode.querySelector('input').type = 'text';
+    }
+");
+
 if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
     $email = $_REQUEST['email'];
     $password = $_REQUEST['password'];
     $isSuccess = false;
 
     $name = $_REQUEST['name'];
-
 
     // validate
     // Vì reload lại page nên $isForget sẽ mang value là false (dù đã đc set true trước đó)
